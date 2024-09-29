@@ -25,14 +25,15 @@ int main(void) {
 double sin_series(double x, double eps) {
 	double sum = 0,	x_n = 0; int n = 0;
 	
-	n = 1;
+	n = 0;
 	x_n = x;
-	sum = x;
+	sum = 0;
 	while (fabs(x_n) > eps) {
-		x_n = x_n*x*x*(-1)/((n+1)*(n+2));
-		n+= 2;
 		sum += x_n;
+		x_n *= x*x*(-1)/(2*(n+1)*(2*n+3));
+		n++;
 	}
+
 	return sum;
 }
 
@@ -40,9 +41,12 @@ double sin2x(double sinx) {
 	double sign = 0;
 	if (sinx > 0) {
 		sign = 1;
-	} else {
+	} else if (sinx < 0) {
 		sign = -1;
+	} else {
+		sign = 0;
 	}
+
 	return sign*sqrt(1- (1-2*sinx*sinx)*(1-2*sinx*sinx));
 }
 
@@ -56,9 +60,7 @@ double sin_my(double x, double eps) {
 
 	if (fabs(x) < 1) {
 		return sin_series(x, eps);
-	} else if (fabs(x) < 2 ) {
-		return sin2x(sin_series(x/2, eps));
 	}
 	
-	return sin2x(sin2x(sin_series(x/2, eps)));	
+	return sin2x(sin_my(x/2, eps));
 }
